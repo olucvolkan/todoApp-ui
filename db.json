@@ -1,0 +1,37 @@
+{
+  "todos": {
+    "todo": {
+      "title": "todo",
+      "items": [
+        {
+          "id": "1",
+          "title": "Volkan",
+          "description": "Todo Task",
+          "status": "todo"
+        }
+      ]
+    },
+    "in-progress": {
+      "title": "In-progress",
+      "items": [
+        {
+          "id": "2",
+          "title": "Volkan",
+          "description": "In progress task",
+          "status": "in-progress"
+        }
+      ]
+    },
+    "done": {
+      "title": "Done",
+      "items": [
+        {
+          "id": "5",
+          "title": "Volkan",
+          "description": "Done Task",
+          "status": "done"
+        }
+      ]
+    }
+  }
+}
