@@ -4,7 +4,6 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import _ from 'lodash';
 import axios from 'axios';
 import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-import { v4 } from "uuid";
 
 function App() {
 
@@ -12,7 +11,7 @@ function App() {
 
 
   useEffect(() => {
-    
+
     async function fetchData() {
       const result = await axios(
         process.env.REACT_APP_TODO_LIST_URL,
@@ -38,8 +37,6 @@ function App() {
 
     const itemCopy = { ...result[source.droppableId].items[source.index] }
     setResult(prev => {
-      console.log(itemCopy)
-      console.log(prev)
       prev = { ...prev }
       prev[source.droppableId].items.splice(source.index, 1)
 
@@ -57,67 +54,71 @@ function App() {
     fetch(process.env.REACT_APP_TODO_UPDATE_URL, {
       method: 'POST',
       body: JSON.stringify(updateRequestPayload),
-      mode: 'no-cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'include', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
   }
 
 
   const addItem = () => {
-    // Api implementation     
-
-    setResult(prev => {
-      return {
-        ...prev,
-        todo: {
-          title: "title",
-          items: [
-            {
-              id: v4(),
-              title: text,
-              description: text
-            },
-            ...prev.todo.items
-          ]
-        }
-      }
-    })
-    setText("")
 
     var requestPayload = {
-      "title": text,
       "description": text,
       "status": "todo",
     }
 
-    fetch(process.env.REACT_APP_TODO_CREATE_URL, {
-      method: 'POST',
-      // We convert the React state to JSON and send it as the POST body
-      body: JSON.stringify(requestPayload)
-    }).then(function (response) {
+    async function fetchData() {
+
+
+      const response = await axios.post(
+        process.env.REACT_APP_TODO_CREATE_URL, requestPayload
+
+      );
+
       console.log(response)
-      return response.json();
-    });
+      console.log(result)
+      setResult(result => ({
+        ...result,
+        todo: {
+          title: "todo",
+          items: [
+            {
+              id: response.data.id.toString(),
+              description: response.data.description
+            },
+            ...result.todo.items
+          ]
+        }
+
+      }
+
+      ));
+    } fetchData();
+    setText("")
+
   }
-  const removeItem = (id)   => {
-    
+
+  const removeItem = (id,index,key) => {
+
     var requestPayload = {
       "id": parseInt(id)
     }
 
-    console.log(requestPayload)
     fetch(process.env.REACT_APP_TODO_DELETE_URL, {
       method: 'POST',
       // We convert the React state to JSON and send it as the POST body
       body: JSON.stringify(requestPayload)
     }).then(function (response) {
       console.log(response)
-    });
+    });  
+    
+    setResult(result => {
+      result = { ...result }
+      result[key].items.splice(index,1)
+
+      return result
+    }) 
   }
   return (
     <div className="App">
@@ -152,6 +153,7 @@ function App() {
                           }
                         >
                           {data.items && data.items.map((el, index) => {
+                            console.log(data)
                             return (
                               <Draggable key={el.id} index={index} draggableId={el.id}>
                                 {(provided, snapshot) => {
@@ -163,7 +165,7 @@ function App() {
                                       {...provided.dragHandleProps}
                                     >
                                       {el.description}
-                                      <button id={"delete-button-"+el.id} onClick={() => {removeItem(el.id)}} value={el.id}>Delete</button>
+                                      <Button variant="danger" size="sm" className={"delete-button"} onClick={() => { removeItem(el.id,index,key) }} value={el.id}>Delete</Button>
                                     </div>
                                   )
                                 }}

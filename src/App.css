@@ -37,6 +37,6 @@
 }
 
 .delete-button{
-  display: flex;
-  margin-left: auto;
+  display: flex !important;
+  margin-left: auto !important;
 }
