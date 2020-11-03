@@ -12,6 +12,7 @@ function App() {
 
 
   useEffect(() => {
+    
     async function fetchData() {
       const result = await axios(
         process.env.REACT_APP_TODO_LIST_URL,
@@ -150,7 +151,7 @@ function App() {
                             "droppable-col"
                           }
                         >
-                          {data.items.map((el, index) => {
+                          {data.items && data.items.map((el, index) => {
                             return (
                               <Draggable key={el.id} index={index} draggableId={el.id}>
                                 {(provided, snapshot) => {
