@@ -14,7 +14,7 @@ function App() {
 
     async function fetchData() {
       const result = await axios(
-        process.env.REACT_APP_TODO_LIST_URL,
+        process.env.REACT_APP_TODO_LIST_URL
       );
       setResult(result.data);
     } fetchData();
@@ -40,7 +40,10 @@ function App() {
       prev = { ...prev }
       prev[source.droppableId].items.splice(source.index, 1)
 
-      prev[destination.droppableId].items.splice(destination.index, 0, itemCopy)
+      if (prev[destination.droppableId].items) {
+
+        prev[destination.droppableId].items.splice(destination.index, 0, itemCopy)
+      }
 
       return prev
     })
@@ -53,10 +56,7 @@ function App() {
 
     fetch(process.env.REACT_APP_TODO_UPDATE_URL, {
       method: 'POST',
-      body: JSON.stringify(updateRequestPayload),
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      body: JSON.stringify(updateRequestPayload)
     })
   }
 
@@ -78,7 +78,7 @@ function App() {
 
       console.log(response)
       console.log(result)
-      setResult(result => ({
+      setResult(_.map(result  => ({
         ...result,
         todo: {
           title: "todo",
@@ -99,7 +99,7 @@ function App() {
 
   }
 
-  const removeItem = (id,index,key) => {
+  const removeItem = (id, index, key) => {
 
     var requestPayload = {
       "id": parseInt(id)
@@ -111,14 +111,14 @@ function App() {
       body: JSON.stringify(requestPayload)
     }).then(function (response) {
       console.log(response)
-    });  
-    
+    });
+
     setResult(result => {
       result = { ...result }
-      result[key].items.splice(index,1)
+      result[key].items.splice(index, 1)
 
       return result
-    }) 
+    })
   }
   return (
     <div className="App">
@@ -165,7 +165,7 @@ function App() {
                                       {...provided.dragHandleProps}
                                     >
                                       {el.description}
-                                      <Button variant="danger" size="sm" className={"delete-button"} onClick={() => { removeItem(el.id,index,key) }} value={el.id}>Delete</Button>
+                                      <Button variant="danger" size="sm" className={"delete-button"} onClick={() => { removeItem(el.id, index, key) }} value={el.id}>Delete</Button>
                                     </div>
                                   )
                                 }}
