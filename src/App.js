@@ -24,14 +24,11 @@ function App() {
   const [text, setText] = useState("")
 
   const handleDragEnd = ({ destination, source }) => {
-    console.log(destination);
-    console.log(source);
     if (!destination) {
       return;
     }
 
     if (destination.index === source.index && destination.droppableId === source.droppableId) {
-
       return;
     }
 
@@ -40,11 +37,10 @@ function App() {
       prev = { ...prev }
       prev[source.droppableId].items.splice(source.index, 1)
 
-      if (prev[destination.droppableId].items) {
 
+      if (prev[destination.droppableId].items) {
         prev[destination.droppableId].items.splice(destination.index, 0, itemCopy)
       }
-
       return prev
     })
 
@@ -52,7 +48,6 @@ function App() {
       "id": parseInt(itemCopy.id),
       "status": destination.droppableId,
     }
-    console.log(updateRequestPayload)
 
     fetch(process.env.REACT_APP_TODO_UPDATE_URL, {
       method: 'POST',
@@ -72,29 +67,33 @@ function App() {
 
 
       const response = await axios.post(
-        process.env.REACT_APP_TODO_CREATE_URL, requestPayload
+        process.env.REACT_APP_TODO_CREATE_URL, JSON.stringify(requestPayload)
 
       );
+     
+    
+      let resultItems  = (result.todo.items !== null) ? result.todo.items  : [];
 
-      console.log(response)
-      console.log(result)
-      setResult(_.map(result  => ({
-        ...result,
-        todo: {
-          title: "todo",
-          items: [
-            {
-              id: response.data.id.toString(),
-              description: response.data.description
-            },
-            ...result.todo.items
-          ]
+      setResult(function (result) {
+          return {
+            ...result,
+            todo: {
+              title: "todo",
+              items: [
+                {
+                  id: response.data.id.toString(),
+                  description: response.data.description
+                },
+                ...resultItems
+              ]
+            }
+          };
         }
-      }
-
-      )));
+      );
     } fetchData();
+    
     setText("")
+
 
   }
 
@@ -152,7 +151,6 @@ function App() {
                           }
                         >
                           {data.items && data.items.map((el, index) => {
-                            console.log(data)
                             return (
                               <Draggable key={el.id} index={index} draggableId={el.id}>
                                 {(provided, snapshot) => {
