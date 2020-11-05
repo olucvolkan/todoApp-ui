@@ -90,10 +90,9 @@ function App() {
             ...result.todo.items
           ]
         }
-
       }
 
-      ));
+      )));
     } fetchData();
     setText("")
 
