@@ -11,11 +11,8 @@ function App() {
 
 
   useEffect(() => {
-
     async function fetchData() {
-      const result = await axios(
-        process.env.REACT_APP_TODO_LIST_URL
-      );
+      const result = await axios(`${process.env.REACT_APP_BASE_ENDPOINT_URL}/todo-list`);
       setResult(result.data);
     } fetchData();
   }
@@ -49,7 +46,7 @@ function App() {
       "status": destination.droppableId,
     }
 
-    fetch(process.env.REACT_APP_TODO_UPDATE_URL, {
+    fetch(`${process.env.REACT_APP_BASE_ENDPOINT_URL}/update-todo`, {
       method: 'POST',
       body: JSON.stringify(updateRequestPayload)
     })
@@ -67,7 +64,7 @@ function App() {
 
 
       const response = await axios.post(
-        process.env.REACT_APP_TODO_CREATE_URL, JSON.stringify(requestPayload)
+        `${process.env.REACT_APP_BASE_ENDPOINT_URL}/create-todo`, JSON.stringify(requestPayload)
 
       );
      
@@ -103,7 +100,7 @@ function App() {
       "id": parseInt(id)
     }
 
-    fetch(process.env.REACT_APP_TODO_DELETE_URL, {
+    fetch(`${process.env.REACT_APP_BASE_ENDPOINT_URL}/delete-todo`, {
       method: 'POST',
       // We convert the React state to JSON and send it as the POST body
       body: JSON.stringify(requestPayload)
